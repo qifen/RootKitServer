@@ -17,19 +17,15 @@ import org.apache.struts2.ServletActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
 public class UploadLogFileAction extends ActionSupport{
-    // ÉÏ´«ÎÄ¼şÓò
-    private File logFile;
-    // ÉÏ´«ÎÄ¼şÀàĞÍ
-    private String fileContentType;
-    // ·â×°ÉÏ´«ÎÄ¼şÃû
+    // æ–‡ä»¶å
     private String fileName;
-    // ½ÓÊÜÒÀÀµ×¢ÈëµÄÊôĞÔ
+    // æ¥å—ä¾èµ–æ³¨å…¥çš„å±æ€§
     private String savePath;
 
     @Override
     public String execute() {
         HttpServletRequest request=ServletActionContext.getRequest();
-        //½ÓÊÕÈÕÖ¾ÎÄ¼ş
+        //æ¥æ”¶æ—¥å¿—æ–‡ä»¶
         FileOutputStream fos = null;
         ServletInputStream sis = null;
         try {
@@ -43,20 +39,20 @@ public class UploadLogFileAction extends ActionSupport{
             while ((len = sis.read(buffer)) != -1) {
                 fos.write(buffer, 0, len);
             }
-            System.out.println("ÎÄ¼şÉÏ´«³É¹¦");
+            System.out.println("ï¿½Ä¼ï¿½ï¿½Ï´ï¿½ï¿½É¹ï¿½");
         } catch (Exception e) {
-            System.out.println("ÎÄ¼şÉÏ´«Ê§°Ü");
+            System.out.println("ï¿½Ä¼ï¿½ï¿½Ï´ï¿½Ê§ï¿½ï¿½");
             e.printStackTrace();
         } finally {
             close(fos, sis);
         }
         
-        //Éú³ÉĞĞÎªÍ¼²¿·Ö
+        //è°ƒç”¨ç”Ÿæˆè¡Œä¸ºå›¾çš„ç®—æ³•
         /*
          * 
          */
         
-        //·µ»ØÍ¼Æ¬µÄÁ÷
+        //è¿”å›è¡Œä¸ºå›¾çš„æµ
         HttpServletResponse response=ServletActionContext.getResponse();
         ServletOutputStream sos=null;
         FileInputStream fis = null;
@@ -69,8 +65,9 @@ public class UploadLogFileAction extends ActionSupport{
 	        while (input.read(bt) > 0) {  
 	        	sos.write(bt);
 	        } 
+	        input.close();
 	        
-	        //²»È·¶¨Òª²»Òª
+	        //ä¸ç¡®å®šè¦ä¸è¦
 	        ServletActionContext.setResponse(response);
 			
 		} catch (IOException e) {
@@ -89,7 +86,7 @@ public class UploadLogFileAction extends ActionSupport{
     }
 
     /**
-     * ÎÄ¼ş´æ·ÅÄ¿Â¼
+     * æ–‡ä»¶å­˜æ”¾ç›®å½•
      * 
      * @return
      */
@@ -107,7 +104,7 @@ public class UploadLogFileAction extends ActionSupport{
                 fis.close();
                 fis=null;
             } catch (IOException e) {
-                System.out.println("ServletInputStream¹Ø±ÕÊ§°Ü");
+                System.out.println("ServletInputStreamï¿½Ø±ï¿½Ê§ï¿½ï¿½");
                 e.printStackTrace();
             }
         }
@@ -116,7 +113,7 @@ public class UploadLogFileAction extends ActionSupport{
                 fos.close();
                 fis=null;
             } catch (IOException e) {
-                System.out.println("FileOutputStream¹Ø±ÕÊ§°Ü");
+                System.out.println("FileOutputStreamï¿½Ø±ï¿½Ê§ï¿½ï¿½");
                 e.printStackTrace();
             }
         }
