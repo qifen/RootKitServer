@@ -6,12 +6,5 @@
 
 <struts>
 
-    <package name="my" extends="struts-default">
-
-        <action name="*" class="com.test.Hello" method="{1}">
-            <result name="success">/demo.jsp</result>
-        </action>
-
-    </package>
 
 </struts>
