@@ -1,4 +1,4 @@
-package com.nju.rootkit;
+package com.nju.rootkit.action;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -12,12 +12,18 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.nju.rootkit.util.ActionUtil;
 import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionSupport;
 
+@SuppressWarnings("serial")
 public class UploadLogFileAction extends ActionSupport{
-    // 文件名
+    // 上传文件域
+    private File logFile;
+    // 上传文件类型
+    private String fileContentType;
+    // 封装上传文件名
     private String fileName;
     // 接受依赖注入的属性
     private String savePath;
@@ -32,27 +38,27 @@ public class UploadLogFileAction extends ActionSupport{
             
             fileName=request.getParameter("LogFile").trim();
             
-            fos = new FileOutputStream(getSavePath() + "/log/" + fileName);
+            fos = new FileOutputStream(getSavePath() + fileName);
             sis = request.getInputStream();
             byte[] buffer = new byte[1024];
             int len = 0;
             while ((len = sis.read(buffer)) != -1) {
                 fos.write(buffer, 0, len);
             }
-            System.out.println("�ļ��ϴ��ɹ�");
+            System.out.println("文件上传成功");
         } catch (Exception e) {
-            System.out.println("�ļ��ϴ�ʧ��");
+            System.out.println("文件上传失败");
             e.printStackTrace();
         } finally {
-            close(fos, sis);
+            ActionUtil.close(fos, sis);
         }
-        
-        //调用生成行为图的算法
+
+        // TODO: 17/3/19  生成行为图部分
         /*
-         * 
+         *
          */
-        
-        //返回行为图的流
+
+        //返回图片的流
         HttpServletResponse response=ServletActionContext.getResponse();
         ServletOutputStream sos=null;
         FileInputStream fis = null;
@@ -64,10 +70,9 @@ public class UploadLogFileAction extends ActionSupport{
 	        byte[] bt = new byte[1024];  
 	        while (input.read(bt) > 0) {  
 	        	sos.write(bt);
-	        } 
-	        input.close();
-	        
-	        //不确定要不要
+	        }
+
+            //不确定要不要
 	        ServletActionContext.setResponse(response);
 			
 		} catch (IOException e) {
@@ -87,7 +92,7 @@ public class UploadLogFileAction extends ActionSupport{
 
     /**
      * 文件存放目录
-     * 
+     *
      * @return
      */
     public String getSavePath() throws Exception{
@@ -96,27 +101,6 @@ public class UploadLogFileAction extends ActionSupport{
 
     public void setSavePath(String savePath) {
         this.savePath = savePath;
-    }
-
-    private void close(FileOutputStream fos, ServletInputStream fis) {
-        if (fis != null) {
-            try {
-                fis.close();
-                fis=null;
-            } catch (IOException e) {
-                System.out.println("ServletInputStream�ر�ʧ��");
-                e.printStackTrace();
-            }
-        }
-        if (fos != null) {
-            try {
-                fos.close();
-                fis=null;
-            } catch (IOException e) {
-                System.out.println("FileOutputStream�ر�ʧ��");
-                e.printStackTrace();
-            }
-        }
     }
 
 }
