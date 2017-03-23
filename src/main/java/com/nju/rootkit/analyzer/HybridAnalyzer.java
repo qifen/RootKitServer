@@ -18,7 +18,7 @@ public class HybridAnalyzer implements Analyzer {
         File file = null;
         try {
 //            file = analyzer.getGraph("F:/sample.log","F:/config.ini","F:/packages.list");
-            file = analyzer.getGraph(log,packageList,"F:/config.ini");
+            file = analyzer.getGraph(log,packageList);
         } catch (FileNotFoundException e) {
             System.out.println("文件未找到！");
             e.printStackTrace();

@@ -2,11 +2,8 @@ package analyzer;
 
 import graphviz.Graph;
 import graphviz.MyGraphViz;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+
+import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -111,7 +108,7 @@ class DynamicAnalyzer {
             map.get(uid).put(cid,child);
         }
         edgs.add(e);
-        graph.addLine(parent,child);
+//        graph.addLine(parent,child);
     }
 
     /**
@@ -205,7 +202,7 @@ class DynamicAnalyzer {
      * 使用图精简算法消除图中的冗余信息
      * 同时画出精简后的分析图
      */
-    private void  simplifyGraph(int u,Map<String,Integer> keywords,int[] inside){
+    private void  simplifyGraph(int u,Map<String,Integer> keywords,int[] inside,Graph graph){
         Node node = nodes.get(u);
         int flag = 0;
         if (node.isFinish()==false  && node.isSchedule() == false && node.getParent() != null && node.getParent().isSchedule()){
@@ -222,9 +219,9 @@ class DynamicAnalyzer {
             }
             if (flag == 1){     //flag=1，接下来遍历到的节点，直到遇到finish节点都会被包裹进合并节点
                 inside[0] = 1;  //标志着接下来的节点要被包裹
-                simplifyGraph(child.getIndex(),keywords,inside);
+                simplifyGraph(child.getIndex(),keywords,inside,graph);
             }else {             //flag=0，当前节点需要收集关键字
-                simplifyGraph(child.getIndex(),keywords,inside);
+                simplifyGraph(child.getIndex(),keywords,inside,graph);
                 if (child.isFileAccess()){
                     int times = 0;
                     if (keywords.get("FILE_ACCESS") != null){
@@ -298,7 +295,7 @@ class DynamicAnalyzer {
         packageListID2Name = new HashMap<>();
         packageListName2ID = new HashMap<>();
         apps = new ArrayList<>();
-        graph = new MyGraphViz();
+//        graph = new MyGraphViz();
     }
 
     /**
@@ -331,40 +328,55 @@ class DynamicAnalyzer {
     /**
      * 获取抽象行为图，以父子树表示
      * @param logFile : log文件路径
-     * @param configPath : config.ini文件路径
      * @param packageList : packages.list文件路径
      * @return 抽象行为图
      * @throws FileNotFoundException
      */
-    public File getGraph(File logFile,File packageList,String configPath) throws FileNotFoundException {
-//        getConfig(configPath);
+    public File getGraph(File logFile,File packageList) throws FileNotFoundException {
+        Properties config = getModuleConfig();
         getPackageList(packageList);
+        graph = new MyGraphViz(config.getProperty("executable"),config.getProperty("tempDir"));
+        graph = new MyGraphViz();
         graph.start();
         drawPrimaryGraph(logFile);
         matchBroadCastLifeCycle();
-//        simplifyGraph(0,new TreeMap<>(),new int[]{0});
+        simplifyGraph(0,new TreeMap<>(),new int[]{0},graph);
         graph.end();
-        return graph.getOutput("F:/out.png","png");
+        return graph.getOutput(config.getProperty("out"),config.getProperty("outType"));
     }
 
-
-    private void getConfig(String path){//读取config.ini内容放进list中,这个文件还可以优化一下
-        File file = new File(path);
+    private Properties getModuleConfig(){
+        Properties properties = null;
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            String line = null;
-            while((line = reader.readLine()) != null){
-//                config.add(line);
-            }
-            reader.close();
+            InputStream inputStream = DynamicAnalyzer.class.getResourceAsStream("/config.properties");
+            properties = new Properties();
+            properties.load(inputStream);
+            inputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         } catch (IOException e) {
-            System.err.println("config.ini文件未找到");
             e.printStackTrace();
         }
+        return  properties;
     }
 
-    private void getPackageList(File packageList){//读取packages.list，内容放进map中
+
+//    private void getConfig(String path){//读取config.ini内容放进list中,这个文件还可以优化一下
 //        File file = new File(path);
+//        try {
+//            BufferedReader reader = new BufferedReader(new FileReader(file));
+//            String line = null;
+//            while((line = reader.readLine()) != null){
+////                config.add(line);
+//            }
+//            reader.close();
+//        } catch (IOException e) {
+//            System.err.println("config.ini文件未找到");
+//            e.printStackTrace();
+//        }
+//    }
+
+    private void getPackageList(File packageList){//读取packages.list，内容放进map中
         File file = packageList;
         String regexPattern = "([0-9A-Za-z._]*) ([0-9]*)";
         Pattern pattern = Pattern.compile(regexPattern);

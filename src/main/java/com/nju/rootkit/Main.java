@@ -17,8 +17,8 @@ public class Main {
      */
     public static void main(String[] args) {
         Analyzer analyzer = new HybridAnalyzer();
-        File log = new File("/sample2.log");
-        File packageList = new File("F:/packages1.list");
+        File log = new File("/sample.log");
+        File packageList = new File("F:/packages.list");
         File out = analyzer.getGraph(packageList,log);
         System.out.println(out);
     }
