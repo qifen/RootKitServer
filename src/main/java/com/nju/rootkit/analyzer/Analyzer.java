@@ -1,4 +1,4 @@
-package analyzer;
+package com.nju.rootkit.analyzer;
 
 import java.io.File;
 

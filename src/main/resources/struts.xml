@@ -5,9 +5,6 @@
         "http://struts.apache.org/dtds/struts-2.3.dtd">
 
 <struts>
-    <!-- 该属性指定需要Struts2处理的请求后缀，该属性的默认值是action，即所有匹配*.action的请求都由Struts2处理。
-       如果用户需要指定多个请求后缀，则多个后缀之间以英文逗号（,）隔开。 -->
-    <constant name="struts.action.extension" value="do"/>
     <!-- 设置浏览器是否缓存静态内容,默认值为true(生产环境下使用),开发阶段最好关闭 -->
     <constant name="struts.serve.static.browserCache" value="false"/>
     <!-- 当struts的配置文件修改后,系统是否自动重新加载该文件,默认值为false(生产环境下使用),开发阶段最好打开 -->
@@ -20,29 +17,30 @@
     <!--解决乱码    -->
     <constant name="struts.i18n.encoding" value="UTF-8"/>
     <!-- 指定允许上传的文件最大字节数。默认值是2097152(2M) -->
-    <constant name="struts.multipart.maxSize" value="22097152"/>
+    <constant name="struts.multipart.maxSize" value="209715200"/>
+    <!-- 设置上传文件的临时文件夹,默认使用javax.servlet.context.tempdir -->
+    <constant name="struts.multipart.saveDir" value="/tmp"/>
 
-    <package name="uploadApk" namespace="/uploadApk" extends="struts-default">
-        <action name="execute" class="com.nju.rootkit.action.UploadApkAction">
+    <package name="upload" namespace="/" extends="struts-default">
+        <action name="uploadApk" class="com.nju.rootkit.action.UploadApkAction">
             <!-- 动态设置savePath的属性值 -->
             <param name="savePath">/apk</param>
-            <result name="success">success.jsp</result>
+            <result name="success">/success.jsp</result>
+            <result name="error">/error.jsp</result>
         </action>
-    </package>
 
-    <package name="uploadLogFile" namespace="/uploadLogFile" extends="struts-default">
-        <action name="execute" class="com.nju.rootkit.action.UploadLogFileAction">
+        <action name="uploadLogFile" class="com.nju.rootkit.action.UploadLogFileAction">
             <!-- 动态设置savePath的属性值 -->
             <param name="savePath">/log</param>
-            <result name="success">success.jsp</result>
+            <result name="success">/success.jsp</result>
+            <result name="error">/error.jsp</result>
         </action>
-    </package>
 
-    <package name="uploadPackage" namespace="/uploadPackage" extends="struts-default">
-        <action name="execute" class="com.nju.rootkit.action.UploadPackageAction">
+        <action name="uploadPackage" class="com.nju.rootkit.action.UploadPackageAction">
             <!-- 动态设置savePath的属性值 -->
             <param name="savePath">/package</param>
-            <result name="success">success.jsp</result>
+            <result name="success">/success.jsp</result>
+            <result name="error">/error.jsp</result>
         </action>
     </package>
 

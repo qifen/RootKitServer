@@ -1,4 +1,4 @@
-package analyzer;
+package com.nju.rootkit.analyzer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,7 +13,7 @@ public class HybridAnalyzer implements Analyzer {
     //TODO 静态分析结合
 
     DynamicAnalyzer analyzer;
-    @Override
+
     public File getGraph(File packageList,File log) {
         File file = null;
         try {

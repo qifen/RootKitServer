@@ -1,5 +1,7 @@
-import analyzer.Analyzer;
-import analyzer.HybridAnalyzer;
+package com.nju.rootkit;
+
+import com.nju.rootkit.analyzer.Analyzer;
+import com.nju.rootkit.analyzer.HybridAnalyzer;
 
 import java.io.File;
 

@@ -1,7 +1,7 @@
-package analyzer;
+package com.nju.rootkit.analyzer;
 
-import graphviz.Graph;
-import graphviz.MyGraphViz;
+import com.nju.rootkit.graphviz.Graph;
+import com.nju.rootkit.graphviz.MyGraphViz;
 
 import java.io.*;
 import java.util.*;

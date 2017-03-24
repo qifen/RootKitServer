@@ -7,7 +7,9 @@ import org.apache.struts2.ServletActionContext;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Created by weiyilin on 17/3/19.
@@ -16,11 +18,11 @@ import java.io.FileOutputStream;
 @SuppressWarnings("serial")
 public class UploadApkAction extends ActionSupport {
     // 文件域
-    private File file;
+    private File apk;
     // 文件类型
-    private String fileContentType;
+    private String apkContentType;
     // 文件名
-    private String fileName;
+    private String apkName;
     // 接受依赖注入的属性
     private String savePath;
 
@@ -28,26 +30,31 @@ public class UploadApkAction extends ActionSupport {
     public String execute() {
         HttpServletRequest request= ServletActionContext.getRequest();
         FileOutputStream fos = null;
-        ServletInputStream sis = null;
+        FileInputStream fis = null;
         try {
             request.setCharacterEncoding("UTF-8");
-            fileName = request.getParameter("APK").trim();
 
-            fos = new FileOutputStream(getSavePath()  + fileName);
-            sis = request.getInputStream();
+            //创建目录
+            File folder = new File(getSavePath());
+            if (!(folder.exists() && folder.isDirectory()))
+                folder.mkdirs();
+            fos = new FileOutputStream(getSavePath() + "/"  + getApkName());
+
+            fis = new FileInputStream(getApk());
             byte[] buffer = new byte[1024];
             int len = 0;
-            while ((len = sis.read(buffer)) != -1) {
+            while ((len = fis.read(buffer)) != -1) {
                 fos.write(buffer, 0, len);
             }
-            System.out.println("文件上传成功");
+            System.out.println("文件上传成功" + getSavePath());
+            return SUCCESS;
         } catch (Exception e) {
             System.out.println("文件上传失败");
             e.printStackTrace();
+            return ERROR;
         } finally {
-            ActionUtil.close(fos, sis);
+            ActionUtil.close(fos, fis);
         }
-        return SUCCESS;
     }
 
     /**
@@ -63,5 +70,27 @@ public class UploadApkAction extends ActionSupport {
         this.savePath = savePath;
     }
 
+    public File getApk() {
+        return apk;
+    }
 
+    public void setApk(File apk) {
+        this.apk = apk;
+    }
+
+    public String getApkContentType() {
+        return apkContentType;
+    }
+
+    public void setApkContentType(String apkContentType) {
+        this.apkContentType = apkContentType;
+    }
+
+    public String getApkName() {
+        return apkName;
+    }
+
+    public void setApkName(String apkName) {
+        this.apkName = apkName;
+    }
 }

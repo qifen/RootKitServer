@@ -1,4 +1,4 @@
-package analyzer;
+package com.nju.rootkit.analyzer;
 
 /**
  * Created by xu on 2017/2/19.

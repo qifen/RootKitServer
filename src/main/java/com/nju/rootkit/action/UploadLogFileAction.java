@@ -33,24 +33,28 @@ public class UploadLogFileAction extends ActionSupport{
         HttpServletRequest request=ServletActionContext.getRequest();
         //接收日志文件
         FileOutputStream fos = null;
-        ServletInputStream sis = null;
+        FileInputStream fis = null;
         try {
-            
-            fileName=request.getParameter("LogFile").trim();
-            
-            fos = new FileOutputStream(getSavePath() + fileName);
-            sis = request.getInputStream();
+            request.setCharacterEncoding("UTF-8");
+
+            //创建目录
+            File folder = new File(getSavePath());
+            if (!(folder.exists() && folder.isDirectory()))
+                folder.mkdirs();
+            fos = new FileOutputStream(getSavePath() + "/"  + getFileName());
+
+            fis = new FileInputStream(getLogFile());
             byte[] buffer = new byte[1024];
             int len = 0;
-            while ((len = sis.read(buffer)) != -1) {
+            while ((len = fis.read(buffer)) != -1) {
                 fos.write(buffer, 0, len);
             }
-            System.out.println("文件上传成功");
+            System.out.println("文件上传成功" + getSavePath());
         } catch (Exception e) {
             System.out.println("文件上传失败");
             e.printStackTrace();
         } finally {
-            ActionUtil.close(fos, sis);
+            ActionUtil.close(fos, fis);
         }
 
         // TODO: 17/3/19  生成行为图部分
@@ -61,7 +65,7 @@ public class UploadLogFileAction extends ActionSupport{
         //返回图片的流
         HttpServletResponse response=ServletActionContext.getResponse();
         ServletOutputStream sos=null;
-        FileInputStream fis = null;
+        fis = null;
         try {
 			sos=response.getOutputStream();
 			fis=new FileInputStream(savePath + "/pic/" + fileName);
@@ -103,4 +107,27 @@ public class UploadLogFileAction extends ActionSupport{
         this.savePath = savePath;
     }
 
+    public File getLogFile() {
+        return logFile;
+    }
+
+    public void setLogFile(File logFile) {
+        this.logFile = logFile;
+    }
+
+    public String getFileContentType() {
+        return fileContentType;
+    }
+
+    public void setFileContentType(String fileContentType) {
+        this.fileContentType = fileContentType;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 }

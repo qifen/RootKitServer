@@ -1,4 +1,4 @@
-package graphviz;
+package com.nju.rootkit.graphviz;
 
 import java.io.File;
 

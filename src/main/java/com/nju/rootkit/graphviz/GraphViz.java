@@ -1,4 +1,4 @@
-package graphviz;
+package com.nju.rootkit.graphviz;
 
 // GraphViz.java - a simple API to call dot from Java programs
 

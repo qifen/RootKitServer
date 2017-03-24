@@ -7,6 +7,7 @@ import org.apache.struts2.ServletActionContext;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 /**
@@ -15,11 +16,11 @@ import java.io.FileOutputStream;
  */
 public class UploadPackageAction extends ActionSupport {
     // 文件域
-    private File file;
+    private File packages;
     // 文件类型
-    private String fileContentType;
+    private String packagesContentType;
     // 文件名
-    private String fileName;
+    private String packagesName;
     // 接受依赖注入的属性
     private String savePath;
 
@@ -27,26 +28,31 @@ public class UploadPackageAction extends ActionSupport {
     public String execute() {
         HttpServletRequest request= ServletActionContext.getRequest();
         FileOutputStream fos = null;
-        ServletInputStream sis = null;
+        FileInputStream fis = null;
         try {
             request.setCharacterEncoding("UTF-8");
-            fileName = request.getParameter("File").trim();
 
-            fos = new FileOutputStream(getSavePath()  + fileName);
-            sis = request.getInputStream();
+            //创建目录
+            File folder = new File(getSavePath());
+            if (!(folder.exists() && folder.isDirectory()))
+                folder.mkdirs();
+            fos = new FileOutputStream(getSavePath() + "/"  + getPackagesName());
+
+            fis = new FileInputStream(getPackages());
             byte[] buffer = new byte[1024];
             int len = 0;
-            while ((len = sis.read(buffer)) != -1) {
+            while ((len = fis.read(buffer)) != -1) {
                 fos.write(buffer, 0, len);
             }
-            System.out.println("文件上传成功");
+            System.out.println("文件上传成功" + getSavePath());
+            return SUCCESS;
         } catch (Exception e) {
             System.out.println("文件上传失败");
             e.printStackTrace();
+            return ERROR;
         } finally {
-            ActionUtil.close(fos, sis);
+            ActionUtil.close(fos, fis);
         }
-        return SUCCESS;
     }
 
     /**
@@ -62,4 +68,27 @@ public class UploadPackageAction extends ActionSupport {
         this.savePath = savePath;
     }
 
+    public File getPackages() {
+        return packages;
+    }
+
+    public void setPackages(File packages) {
+        this.packages = packages;
+    }
+
+    public String getPackagesContentType() {
+        return packagesContentType;
+    }
+
+    public void setPackagesContentType(String packagesContentType) {
+        this.packagesContentType = packagesContentType;
+    }
+
+    public String getPackagesName() {
+        return packagesName;
+    }
+
+    public void setPackagesName(String packagesName) {
+        this.packagesName = packagesName;
+    }
 }
