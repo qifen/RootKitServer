@@ -336,7 +336,7 @@ public class DynamicAnalyzer {
         Properties config = getModuleConfig();
         getPackageList(packageList);
         graph = new MyGraphViz(config.getProperty("executable"),config.getProperty("tempDir"));
-        graph = new MyGraphViz();
+        // graph = new MyGraphViz();
         graph.start();
         drawPrimaryGraph(logFile);
         matchBroadCastLifeCycle();
