@@ -21,6 +21,7 @@ public class Main {
         File log = new File("F:/AndroidTools/log/sample.log");
         File packageList = new File("F:/AndroidTools/package/packages.list");
         File out = analyzer.getGraph(packageList,log);
+        
         System.out.println(out);
 
     }
