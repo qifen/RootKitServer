@@ -24,21 +24,21 @@
     <package name="upload" namespace="/" extends="struts-default">
         <action name="uploadApk" class="com.nju.rootkit.action.UploadApkAction">
             <!-- 动态设置savePath的属性值 -->
-            <param name="savePath">/apk</param>
+            <param name="savePath">F:/AndroidTools/apk</param>
             <result name="success">/success.jsp</result>
             <result name="error">/error.jsp</result>
         </action>
 
         <action name="uploadLogFile" class="com.nju.rootkit.action.UploadLogFileAction">
             <!-- 动态设置savePath的属性值 -->
-            <param name="savePath">/log</param>
+            <param name="savePath">F:/AndroidTools/log</param>
             <result name="success">/success.jsp</result>
             <result name="error">/error.jsp</result>
         </action>
 
         <action name="uploadPackage" class="com.nju.rootkit.action.UploadPackageAction">
             <!-- 动态设置savePath的属性值 -->
-            <param name="savePath">/package</param>
+            <param name="savePath">F:/AndroidTools/package</param>
             <result name="success">/success.jsp</result>
             <result name="error">/error.jsp</result>
         </action>

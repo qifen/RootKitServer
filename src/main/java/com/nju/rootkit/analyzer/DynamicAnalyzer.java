@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  *  动态分析器
  *
  */
-class DynamicAnalyzer {
+public class DynamicAnalyzer {
     private List<Node> nodes;
     private List<Edge> edgs;
     private Map<Integer,Map<Integer,Node>> map;//<uid,<pid,node>> 只存储树叶，用于继续向后生长
