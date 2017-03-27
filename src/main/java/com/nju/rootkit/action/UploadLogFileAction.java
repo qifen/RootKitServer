@@ -12,6 +12,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.nju.rootkit.analyzer.Analyzer;
+import com.nju.rootkit.analyzer.HybridAnalyzer;
 import com.nju.rootkit.util.ActionUtil;
 import org.apache.struts2.ServletActionContext;
 
@@ -58,9 +60,16 @@ public class UploadLogFileAction extends ActionSupport{
         }
 
         // TODO: 17/3/19  生成行为图部分
-        /*
-         *
-         */
+        Analyzer analyzer = new HybridAnalyzer();
+        File log = null;
+		try {
+			log = new File(getSavePath() + "/"  + getFileName());
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        File packageList = new File("F:/AndroidTools/package/packages.list");
+        File out = analyzer.getGraph(packageList,log);
 
         //返回图片的流
         HttpServletResponse response=ServletActionContext.getResponse();
@@ -68,7 +77,8 @@ public class UploadLogFileAction extends ActionSupport{
         fis = null;
         try {
 			sos=response.getOutputStream();
-			fis=new FileInputStream(savePath + "/pic/" + fileName);
+			//fis=new FileInputStream(savePath + "/pic/" + fileName);
+			fis=new FileInputStream(out);
 			InputStream input = new BufferedInputStream(fis);
 			
 	        byte[] bt = new byte[1024];  

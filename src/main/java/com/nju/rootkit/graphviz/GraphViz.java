@@ -141,8 +141,10 @@ public class GraphViz
     public GraphViz() {
         if (GraphViz.osName.contains("Windows")) {
 //            this.tempDir = "c:/temp";
-            this.tempDir = "D:/graphviz-2.38/release/temp";
-            this.executable = "D:/graphviz-2.38/release/bin/dot.exe";
+            //this.tempDir = "D:/graphviz-2.38/release/temp";
+            this.tempDir = "F:/AndroidTools/graphviz-2.38/release/temp";
+            //this.executable = "D:/graphviz-2.38/release/bin/dot.exe";
+            this.executable = "F:/AndroidTools/graphviz-2.38/release/bin/dot.exe";
         } else if (GraphViz.osName.equals("MacOSX")) {
             this.tempDir = "/tmp";
             this.executable = "/usr/local/bin/dot";
