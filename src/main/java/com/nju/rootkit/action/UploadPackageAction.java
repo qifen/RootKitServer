@@ -12,16 +12,16 @@ import java.io.FileOutputStream;
 
 /**
  * Created by weiyilin on 17/3/21.
- * 获取Android端传来的packages.list文件
+ * 鑾峰彇Android绔紶鏉ョ殑packages.list鏂囦欢
  */
 public class UploadPackageAction extends ActionSupport {
-    // 文件域
+    // 鏂囦欢鍩�
     private File packages;
-    // 文件类型
+    // 鏂囦欢绫诲瀷
     private String packagesContentType;
-    // 文件名
+    // 鏂囦欢鍚�
     private String packagesName;
-    // 接受依赖注入的属性
+    // 鎺ュ彈渚濊禆娉ㄥ叆鐨勫睘鎬�
     private String savePath;
 
     @Override
@@ -32,11 +32,12 @@ public class UploadPackageAction extends ActionSupport {
         try {
             request.setCharacterEncoding("UTF-8");
 
-            //创建目录
+            //鍒涘缓鐩綍
             File folder = new File(getSavePath());
             if (!(folder.exists() && folder.isDirectory()))
                 folder.mkdirs();
-            fos = new FileOutputStream(getSavePath() + "/"  + getPackagesName());
+            //fos = new FileOutputStream(getSavePath() + "/"  + getPackagesName());
+            fos = new FileOutputStream(getSavePath() + "/"  + "packages.list");
 
             fis = new FileInputStream(getPackages());
             byte[] buffer = new byte[1024];
@@ -44,10 +45,10 @@ public class UploadPackageAction extends ActionSupport {
             while ((len = fis.read(buffer)) != -1) {
                 fos.write(buffer, 0, len);
             }
-            System.out.println("文件上传成功" + getSavePath());
+            System.out.println("鏂囦欢涓婁紶鎴愬姛" + getSavePath());
             return SUCCESS;
         } catch (Exception e) {
-            System.out.println("文件上传失败");
+            System.out.println("鏂囦欢涓婁紶澶辫触");
             e.printStackTrace();
             return ERROR;
         } finally {
@@ -56,7 +57,7 @@ public class UploadPackageAction extends ActionSupport {
     }
 
     /**
-     * 文件存放目录
+     * 鏂囦欢瀛樻斁鐩綍
      *
      * @return
      */
