@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by weiyilin on 17/3/21.
@@ -26,6 +28,9 @@ public class UploadPackageAction extends ActionSupport {
 
     @Override
     public String execute() {
+    	
+    	System.out.println("enter UploadPackageAction");
+    	
         HttpServletRequest request= ServletActionContext.getRequest();
         FileOutputStream fos = null;
         FileInputStream fis = null;
@@ -33,26 +38,40 @@ public class UploadPackageAction extends ActionSupport {
             request.setCharacterEncoding("UTF-8");
 
             //鍒涘缓鐩綍
-            File folder = new File(getSavePath());
+            //File folder = new File(getSavePath());
+            File folder = new File("F:/AndroidTools/package");
             if (!(folder.exists() && folder.isDirectory()))
                 folder.mkdirs();
             //fos = new FileOutputStream(getSavePath() + "/"  + getPackagesName());
-            fos = new FileOutputStream(getSavePath() + "/"  + "packages.list");
+            fos = new FileOutputStream("F:/AndroidTools/package" + "/"  + "packages.list");
 
-            fis = new FileInputStream(getPackages());
+            File a=(File)request.getAttribute("packages");
+            fis = new FileInputStream(a);
+            //is=request.getInputStream();   
+            
+            System.out.println("开始");
+            
             byte[] buffer = new byte[1024];
             int len = 0;
             while ((len = fis.read(buffer)) != -1) {
+            	System.out.println("-----"+len+"-----");
                 fos.write(buffer, 0, len);
             }
-            System.out.println("鏂囦欢涓婁紶鎴愬姛" + getSavePath());
+            System.out.println("上传packages.list成功！" + getSavePath());
             return SUCCESS;
         } catch (Exception e) {
-            System.out.println("鏂囦欢涓婁紶澶辫触");
+            System.out.println("上传packages.list失败！");
             e.printStackTrace();
             return ERROR;
         } finally {
-            ActionUtil.close(fos, fis);
+            //ActionUtil.close(fos, fis);
+        	try {
+				fos.close();
+				fis.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
     }
 
