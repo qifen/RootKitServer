@@ -21,49 +21,55 @@ import com.opensymphony.xwork2.ActionSupport;
 
 @SuppressWarnings("serial")
 public class UploadLogFileAction extends ActionSupport{
-    // 上传文件域
+
     private File logFile;
-    // 上传文件类型
+
     private String fileContentType;
-    // 封装上传文件名
+
     private String fileName;
-    // 接受依赖注入的属性
+
     private String savePath;
 
     @Override
     public String execute() {
+    	System.out.println("enter UploadLogFileAction");
+    	
         HttpServletRequest request=ServletActionContext.getRequest();
-        //接收日志文件
+
         FileOutputStream fos = null;
         FileInputStream fis = null;
+        String packageName=null;
         try {
             request.setCharacterEncoding("UTF-8");
 
-            //创建目录
-            File folder = new File(getSavePath());
+            //File folder = new File(getSavePath());
+            File folder = new File("F:/AndroidTools/log");
             if (!(folder.exists() && folder.isDirectory()))
                 folder.mkdirs();
-            fos = new FileOutputStream(getSavePath() + "/"  + getFileName());
+            //fos = new FileOutputStream(getSavePath() + "/"  + getFileName());
+            packageName=(String)request.getAttribute("PackageName");
+            fos = new FileOutputStream("F:/AndroidTools/log" + "/"  + packageName.trim());
 
-            fis = new FileInputStream(getLogFile());
+            File in=(File)request.getAttribute("logFile");
+            fis = new FileInputStream(in);
             byte[] buffer = new byte[1024];
             int len = 0;
             while ((len = fis.read(buffer)) != -1) {
                 fos.write(buffer, 0, len);
             }
-            System.out.println("文件上传成功" + getSavePath());
+            System.out.println("接收日志文件成功！" + getSavePath());
         } catch (Exception e) {
-            System.out.println("文件上传失败");
+            System.out.println("接收日志文件失败！");
             e.printStackTrace();
         } finally {
             ActionUtil.close(fos, fis);
         }
 
-        // TODO: 17/3/19  生成行为图部分
+        // TODO: 17/3/19  调用生成行为图方法
         Analyzer analyzer = new HybridAnalyzer();
         File log = null;
 		try {
-			log = new File(getSavePath() + "/"  + getFileName());
+			log = new File("F:/AndroidTools/log" + "/"  + packageName.trim());
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -71,7 +77,7 @@ public class UploadLogFileAction extends ActionSupport{
         File packageList = new File("F:/AndroidTools/package/packages.list");
         File out = analyzer.getGraph(packageList,log);
 
-        //返回图片的流
+        //返回生成图的流
         HttpServletResponse response=ServletActionContext.getResponse();
         ServletOutputStream sos=null;
         fis = null;
@@ -86,11 +92,13 @@ public class UploadLogFileAction extends ActionSupport{
 	        	sos.write(bt);
 	        }
 
-            //不确定要不要
 	        ServletActionContext.setResponse(response);
+	        
+	        System.out.println("返回图片流成功！");
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			System.out.println("返回图片流失败！"+e.toString());
 			e.printStackTrace();
 		} finally{
 			try {
@@ -105,7 +113,7 @@ public class UploadLogFileAction extends ActionSupport{
     }
 
     /**
-     * 文件存放目录
+     * 
      *
      * @return
      */
