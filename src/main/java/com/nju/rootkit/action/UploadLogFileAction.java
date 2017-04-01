@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
@@ -35,31 +36,52 @@ public class UploadLogFileAction extends ActionSupport{
     	System.out.println("enter UploadLogFileAction");
     	
         HttpServletRequest request=ServletActionContext.getRequest();
+        try {
+			request.setCharacterEncoding("UTF-8");
+		} catch (UnsupportedEncodingException e3) {
+			// TODO Auto-generated catch block
+			e3.printStackTrace();
+		}
 
         FileOutputStream fos = null;
         FileInputStream fis = null;
-        String packageName=null;
+        String packageName=(String)request.getAttribute("PackageName");
+        String packageName2=request.getParameter("PackageName");
+        System.out.println("getAttribute"+packageName);
+        System.out.println("getParameter"+packageName2);
+        
+        
+        //File logFile=new File("F:/AndroidTools/log" + "/"  + packageName.trim());
+        File logFile=new File("F:/AndroidTools/log" + "/"  + "sample");
+        if(logFile.exists()){
+        	logFile.delete();
+        }
         try {
-            request.setCharacterEncoding("UTF-8");
-
-            //File folder = new File(getSavePath());
             File folder = new File("F:/AndroidTools/log");
             if (!(folder.exists() && folder.isDirectory()))
                 folder.mkdirs();
-            //fos = new FileOutputStream(getSavePath() + "/"  + getFileName());
-            packageName=(String)request.getAttribute("PackageName");
-            fos = new FileOutputStream("F:/AndroidTools/log" + "/"  + packageName.trim());
+			logFile.createNewFile();
+		} catch (IOException e2) {
+			System.out.println("创建日志文件失败！");
+			e2.printStackTrace();
+		}
+        
+        try {
 
-            File in=(File)request.getAttribute("logFile");
+            //fos = new FileOutputStream(getSavePath() + "/"  + getFileName());
+            fos = new FileOutputStream(logFile);
+
+            File in=(File)request.getAttribute("LogFile");
             fis = new FileInputStream(in);
             byte[] buffer = new byte[1024];
             int len = 0;
             while ((len = fis.read(buffer)) != -1) {
+            	System.out.println("getLogFile-----"+len);
                 fos.write(buffer, 0, len);
             }
             System.out.println("接收日志文件成功！" + getSavePath());
         } catch (Exception e) {
-            System.out.println("接收日志文件失败！");
+            System.out.println("接收日志文件失败！"+e.toString());
             e.printStackTrace();
         } finally {
             ActionUtil.close(fos, fis);
@@ -67,18 +89,12 @@ public class UploadLogFileAction extends ActionSupport{
 
         // TODO: 17/3/19  调用生成行为图方法
         Analyzer analyzer = new HybridAnalyzer();
-        File log = null;
-		try {
-			log = new File("F:/AndroidTools/log" + "/"  + packageName.trim());
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
         File packageList = new File("F:/AndroidTools/package/packages.list");
-        File out = analyzer.getGraph(packageList,log);
+        File out = analyzer.getGraph(packageList,logFile);
 
         //返回生成图的流
         HttpServletResponse response=ServletActionContext.getResponse();
+        response.setCharacterEncoding("UTF-8");
         ServletOutputStream sos=null;
         fis = null;
         try {
@@ -87,8 +103,10 @@ public class UploadLogFileAction extends ActionSupport{
 			fis=new FileInputStream(out);
 			InputStream input = new BufferedInputStream(fis);
 			
-	        byte[] bt = new byte[1024];  
+	        byte[] bt = new byte[1024]; 
+	        
 	        while (input.read(bt) > 0) {  
+	        	System.out.println("returnPic-----");
 	        	sos.write(bt);
 	        }
 
