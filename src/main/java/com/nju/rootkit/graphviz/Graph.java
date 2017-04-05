@@ -12,4 +12,5 @@ public interface Graph {
     public void start();
     public void end();
     public File getOutput(String path, String type);
+    public void print();//修改
 }

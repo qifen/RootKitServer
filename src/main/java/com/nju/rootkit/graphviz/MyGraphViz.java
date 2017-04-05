@@ -77,4 +77,11 @@ public class MyGraphViz extends GraphViz implements Graph{
         this.writeGraphToFile( this.getGraph(this.getDotSource(), type, "dot"), out );
         return  out;
     }
+    
+    public void print(){
+    	for(int i=0;i<nodes.size();i++){
+    		GNode n=nodes.get(i);
+    		System.out.println(i+"："+n.getLabel()+"；"+n.getIndex()+"；");
+    	}
+    }
 }

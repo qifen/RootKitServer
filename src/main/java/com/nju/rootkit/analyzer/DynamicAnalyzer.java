@@ -342,6 +342,22 @@ public class DynamicAnalyzer {
         matchBroadCastLifeCycle();
         simplifyGraph(0,new TreeMap<>(),new int[]{0},graph);
         graph.end();
+        //修改
+        //graph.print();
+
+        for(int i=0;i<nodes.size();i++){
+        	Node n=nodes.get(i);
+        	if(n.getChild()>0){
+        		Edge e1;
+        		e1=n.getNext();
+        		while(e1!=null){
+        			System.out.println(n.getIndex()+"--"+e1.toString()+"--"+e1.getTo().getIndex()+"--"+n.getFunc());
+        			e1=e1.getNext();
+        		}        		        		
+        	}
+        	
+        }
+        
         return graph.getOutput(config.getProperty("out"),config.getProperty("outType"));
     }
 
