@@ -345,18 +345,20 @@ public class DynamicAnalyzer {
         //修改
         //graph.print();
 
+        /*
         for(int i=0;i<nodes.size();i++){
         	Node n=nodes.get(i);
         	if(n.getChild()>0){
         		Edge e1;
         		e1=n.getNext();
         		while(e1!=null){
-        			System.out.println(n.getIndex()+"--"+e1.toString()+"--"+e1.getTo().getIndex()+"--"+n.getFunc());
+        			System.out.println(n.getIndex()+"--"+e1.toString()+"--"+e1.getTo().getIndex()+"--"+n.getFunc()+"--"+n.getParam());
         			e1=e1.getNext();
         		}        		        		
         	}
         	
         }
+        */
         
         return graph.getOutput(config.getProperty("out"),config.getProperty("outType"));
     }

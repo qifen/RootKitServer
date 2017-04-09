@@ -33,7 +33,6 @@ public class UploadLogFileAction extends ActionSupport{
 
     @Override
     public String execute() {
-    	System.out.println("enter UploadLogFileAction");
     	
         HttpServletRequest request=ServletActionContext.getRequest();
         try {
@@ -47,8 +46,6 @@ public class UploadLogFileAction extends ActionSupport{
         FileInputStream fis = null;
         String packageName=(String)request.getAttribute("PackageName");
         String packageName2=request.getParameter("PackageName");
-        System.out.println("getAttribute"+packageName);
-        System.out.println("getParameter"+packageName2);
         
         
         //File logFile=new File("F:/AndroidTools/log" + "/"  + packageName.trim());
@@ -76,7 +73,6 @@ public class UploadLogFileAction extends ActionSupport{
             byte[] buffer = new byte[1024];
             int len = 0;
             while ((len = fis.read(buffer)) != -1) {
-            	System.out.println("getLogFile-----"+len);
                 fos.write(buffer, 0, len);
             }
             System.out.println("接收日志文件成功！" + getSavePath());

@@ -45,11 +45,9 @@ public class UploadPackageAction extends ActionSupport {
             //fos = new FileOutputStream(getSavePath() + "/"  + getPackagesName());
             fos = new FileOutputStream("F:/AndroidTools/package" + "/"  + "packages.list");
 
+            /*
             File a=(File)request.getAttribute("packages");
-            fis = new FileInputStream(a);
-            //is=request.getInputStream();   
-            
-            System.out.println("开始");
+            fis = new FileInputStream(a);            
             
             byte[] buffer = new byte[1024];
             int len = 0;
@@ -57,6 +55,13 @@ public class UploadPackageAction extends ActionSupport {
             	System.out.println("-----"+len+"-----");
                 fos.write(buffer, 0, len);
             }
+            */
+            
+            //String fileContent=(String)request.getAttribute("packagesContent");
+            String fileContent=request.getParameter("packagesContent").trim();
+            System.out.println("内容："+fileContent);
+            byte[] bytes=fileContent.getBytes();
+            fos.write(bytes);
             System.out.println("上传packages.list成功！" + getSavePath());
             return SUCCESS;
         } catch (Exception e) {
