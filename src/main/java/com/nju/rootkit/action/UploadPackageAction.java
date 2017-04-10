@@ -58,8 +58,7 @@ public class UploadPackageAction extends ActionSupport {
             */
             
             //String fileContent=(String)request.getAttribute("packagesContent");
-            String fileContent=request.getParameter("packagesContent").trim();
-            System.out.println("内容："+fileContent);
+            String fileContent = request.getParameter("packagesContent").trim();
             byte[] bytes=fileContent.getBytes();
             fos.write(bytes);
             System.out.println("上传packages.list成功！" + getSavePath());
