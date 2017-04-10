@@ -33,7 +33,7 @@ public class UploadPackageAction extends ActionSupport {
     	
         HttpServletRequest request= ServletActionContext.getRequest();
         FileOutputStream fos = null;
-        FileInputStream fis = null;
+        //FileInputStream fis = null;
         try {
             request.setCharacterEncoding("UTF-8");
 
@@ -72,7 +72,6 @@ public class UploadPackageAction extends ActionSupport {
             //ActionUtil.close(fos, fis);
         	try {
 				fos.close();
-				fis.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
