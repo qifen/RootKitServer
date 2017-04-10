@@ -70,6 +70,9 @@ public class MyGraphViz extends GraphViz implements Graph{
             addln(entry.getValue().toDOTSentence());
         }
         this.addln(this.end_graph());
+
+        Identify identify = new Identify(this.nodes);
+        identify.identify();
     }
 
     public File getOutput(String path,String type){

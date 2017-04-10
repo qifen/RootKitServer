@@ -42,6 +42,11 @@
             <result name="success">/success.jsp</result>
             <result name="error">/error.jsp</result>
         </action>
+
+        <action name="uploadIdentify" class="com.nju.rootkit.action.UploadIdentifyAction">
+            <result name="success">/success.jsp</result>
+            <result name="error">/error.jsp</result>
+        </action>
     </package>
 
 </struts>
