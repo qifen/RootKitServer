@@ -28,6 +28,7 @@ public class UploadIdentifyAction extends ActionSupport {
         try {
             out = response.getWriter();
             out.write(jsonStr);
+            System.out.println("UploadIdentifyAction");
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

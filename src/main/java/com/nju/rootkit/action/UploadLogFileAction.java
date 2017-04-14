@@ -87,6 +87,8 @@ public class UploadLogFileAction extends ActionSupport{
         Analyzer analyzer = new HybridAnalyzer();
         File packageList = new File("F:/AndroidTools/package/packages.list");
         File out = analyzer.getGraph(packageList,logFile);
+        
+        //File out = new File("F:/AndroidTools/pic/out.png");
 
         //返回生成图的流
         HttpServletResponse response=ServletActionContext.getResponse();
