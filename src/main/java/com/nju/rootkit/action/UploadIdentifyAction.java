@@ -18,6 +18,7 @@ public class UploadIdentifyAction extends ActionSupport {
         HttpServletResponse response= ServletActionContext.getResponse();
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json; charset=utf-8");
+        System.out.println("start UploadIdentifyAction");
 
         int status = 1;
         if (Identify.content.equals("")){
@@ -28,7 +29,7 @@ public class UploadIdentifyAction extends ActionSupport {
         try {
             out = response.getWriter();
             out.write(jsonStr);
-            System.out.println("UploadIdentifyAction");
+            System.out.println("finish UploadIdentifyAction");
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

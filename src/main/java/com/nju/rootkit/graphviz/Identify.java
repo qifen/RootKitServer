@@ -19,7 +19,7 @@ public class Identify {
     private ArrayList<String> operations;
     private ArrayList<String> results;
 
-    public static String content;
+    public static String content = "";
 
     public Identify(Map<Integer,GNode> nodes){
         this.nodes = nodes;
