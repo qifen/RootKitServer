@@ -18,8 +18,8 @@ public class Main {
      */
     public static void main(String[] args) {
         Analyzer analyzer = new HybridAnalyzer();
-        File log = new File("F:/AndroidTools/log/sample.theone");
-        File packageList = new File("F:/AndroidTools/package/packages.list");
+        File log = new File("E:/AndroidTools/log/sample.log");
+        File packageList = new File("E:/AndroidTools/package/packages.list");
         File out = analyzer.getGraph(packageList,log);
         
         System.out.println(out);
