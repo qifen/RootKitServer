@@ -8,6 +8,9 @@ public class Test {
 		//a.decompileApk("E:\\AndroidTools\\APKTool\\APKs", "com.sinelife.theone.apk");
 		//a.obtainPermission();
 		a.obtainAPI();
+		
+		APIExtracting b=new APIExtracting();
+		//b.extractAPIs("E:\\AndroidTools\\Android-19-API\\android");
 	}
 
 }

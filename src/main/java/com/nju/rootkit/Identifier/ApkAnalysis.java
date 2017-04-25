@@ -149,12 +149,18 @@ public class ApkAnalysis {
 								tmp=parts[0].lastIndexOf('/');
 								api=parts[0].substring(tmp+1, parts[0].length());
 								
-								if(!api.contains("$") && !parts[1].contains("<init>")){
+								//如果存在内部类调用API
+								if(api.contains("$")){
+									int pos=api.indexOf('$');
+									api=api.substring(0, pos);
+								}
+								
+								if(!parts[1].contains("<init>")){
 									tmp=parts[1].indexOf('(');
 									api+="."+parts[1].substring(0, tmp);
 									
 									//System.out.println(f.getAbsolutePath()+"-----"+api);	
-									set.add(f.getAbsolutePath()+"-----"+api);
+									set.add(f.getName()+"-----"+api);
 								}								
 
 							}
