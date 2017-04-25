@@ -6,7 +6,8 @@ public class Test {
 		ApkAnalysis a=new ApkAnalysis();
 		
 		//a.decompileApk("E:\\AndroidTools\\APKTool\\APKs", "com.sinelife.theone.apk");
-		a.obtainPermission();
+		//a.obtainPermission();
+		a.obtainAPI();
 	}
 
 }
