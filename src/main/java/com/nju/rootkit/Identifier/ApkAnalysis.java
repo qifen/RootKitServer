@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,37 +26,55 @@ import org.xml.sax.SAXException;
 public class ApkAnalysis {
 	
 	private String apkToolPath="E:\\AndroidTools\\APKTool\\apktool\\apktool";//apktool的路径
-	private String apkFileDir="E:\\AndroidTools\\APKTool\\APKs";//解析后的apk文件存放路径
-	private String apkName=null;
-	private String packageName=null;
 	int count=0;
 	Set set=new HashSet();
+	ArrayList<String> apiPackage=null;
 	
 	/*
 	 * 反编译APK
 	 */
-	public void decompileApk(String apkPath,String apkName){
-		this.apkName=apkName;		
-		System.out.println("apkName-------"+apkName);
+	public void decompileApk(){
 		
-		String tempName=apkName.substring(0, apkName.length()-4);
-		File old=new File(apkFileDir+"\\"+tempName);
-		tempName=tempName.replace(".", "");
-		this.packageName=tempName;
-		//this.packageName="test";
-		System.out.println("packageName-------"+this.packageName);
-		
-		Runtime runtime = Runtime.getRuntime();
-		String cmd=apkToolPath+" d "+apkPath+"\\"+apkName+" "+apkFileDir+"\\"+this.packageName;//d为反编译命令
-		//String cmd="cd "+apkToolPath;
+		//String apkFileDir="E:\\AndroidTools\\APKTool\\MalwareTest";//解析后的apk文件存放路径,恶意软件测试集
+		//String apkFileDir="E:\\AndroidTools\\APKTool\\MalwareTrain";//解析后的apk文件存放路径,恶意软件训练集
+		//String apkFileDir="E:\\AndroidTools\\APKTool\\NormalTrain";//解析后的apk文件存放路径,正常软件训练集
+		String apkFileDir="E:\\AndroidTools\\APKTool\\NormalTest";//解析后的apk文件存放路径,正常软件测试集
 		
 		try {			
-			Process p=runtime.exec("cmd /c "+cmd,null,new File(apkFileDir));
-			p.waitFor();
-			System.out.println("apk解析完毕！");
-			runtime.exec("cmd /c wmic process where name='cmd.exe' call terminate");
-
-			p.destroy();
+			//获取需要反编译的apk文件
+			File apkDir=new File("E:\\AndroidTools\\APKTool\\Sample\\Test");
+			File[] apks=apkDir.listFiles();
+			String apkName=null;
+			String apkPath=null;
+			String tempName=null;
+			String packageName=null;
+			String cmd=null;
+			
+			int count=1;
+			
+			Runtime runtime=Runtime.getRuntime();
+			File apk=null;
+			for(int i=81;i<apks.length;i++){
+			
+				apk=apks[i];
+				if(apk.isDirectory()){
+					continue;
+				}
+				
+				apkName=apk.getName();
+				apkPath=apk.getAbsolutePath();
+				tempName=apkName.substring(0, apkName.length()-4);
+				packageName=tempName.replace(".", "");
+				
+				cmd=apkToolPath+" d "+apkPath+" -o "+apkFileDir+"\\"+packageName;//d为反编译命令
+				
+				Process p=runtime.exec("cmd /c "+cmd);
+				p.waitFor();
+				System.out.println(i+"："+apkName+"解析完毕！");
+				p.destroy();
+			}
+			
+			runtime.exec("cmd /c wmic process where name='cmd.exe' call terminate");			
 			
 		} catch (IOException e) {
 			System.out.println(e.toString());
@@ -63,23 +82,28 @@ public class ApkAnalysis {
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally{
-			obtainPermission();
-		}
-		
+		} 
 		
 	}
 	
-	public void obtainPermission(){
-		System.out.println("开始解析权限！");
-		packageName="test";
+	public ArrayList<String> obtainPermission(String apkFileDir){
+		System.out.println("开始解析权限："+apkFileDir);
+		//String apkFileDir="E:\\AndroidTools\\APKTool\\MalwareTrain";//解析后的apk文件存放路径
+		//String packageName="test";
+		
+		//判断文件是否存在
+		File f=new File(apkFileDir+"\\AndroidManifest.xml");
+		if(!f.exists()){
+			return null;
+		}
 
 		//创建一个DocumentBuilderFactory的对象
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		//创建DocumentBuilder对象
+		ArrayList<String> ps=new ArrayList<String>();
 		try {
 			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document document = db.parse(apkFileDir+"\\"+packageName+"\\AndroidManifest.xml");
+			Document document = db.parse(apkFileDir+"\\AndroidManifest.xml");
 			//获取所有uses-permission节点的集合
 			NodeList bookList = document.getElementsByTagName("uses-permission");
 			//遍历
@@ -88,8 +112,10 @@ public class ApkAnalysis {
 				Node n=bookList.item(i);
 				Element elem = (Element) n; 
 				p=elem.getAttribute("android:name");
-				System.out.println(p);
+				ps.add(p);
+				//System.out.println(p);
 			}
+			return ps;
 		} catch (ParserConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -100,18 +126,31 @@ public class ApkAnalysis {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return ps;
 	}
 	
-	public void obtainAPI(){
-		String packageName="test";
-		
-		String smaliPath=apkFileDir+"\\"+packageName+"\\smali";
-		analyzeFile(smaliPath);
-		
-		for(Iterator it = set.iterator();  it.hasNext(); ){
-			System.out.println(it.next().toString());    
+	public Set obtainAPI(String apkFileDir){
+		//String apkFileDir="E:\\AndroidTools\\APKTool\\MalwareTrain";//解析后的apk文件存放路径
+		//String packageName="_comaijiaoyouandroidsipphone_1005_105";
+		if(apiPackage==null){
+			apiPackage=new ArrayList<String>();
+			getAPIPackages();
 		}
-		System.out.println("共调用API个数："+set.size());
+		
+		set.clear();
+		
+		File apkFile=new File(apkFileDir);
+		File[] files=apkFile.listFiles();
+		if(files==null || files.length==0){
+			return set;
+		}
+		for(File f:files){
+			if(f.getAbsolutePath().contains("\\smali")){
+				analyzeFile(f.getAbsolutePath());
+			}
+		}
+		
+		return set;
 		
 	}
 	
@@ -122,16 +161,16 @@ public class ApkAnalysis {
 			
 			if(files!=null){
 				for(File f:files){
+					//analyzeFile(f.getAbsolutePath());	
 					//只检测android包和com包
 					if(f.getAbsolutePath().contains("\\android") || f.getAbsolutePath().contains("\\com")){
-						analyzeFile(f.getAbsolutePath());
-					}					
+						analyzeFile(f.getAbsolutePath());	
+					}
 				}				
 			}
 		}else{
 			File f=new File(path);
-			if(f.getName().contains(".smali") && (!f.getName().equals("SuppressLint.smali")) 
-					&& (!f.getName().equals("TargetApi.smali"))){
+			if(f.getName().contains(".smali") && f.getName().charAt(0)>='A' && f.getName().charAt(0)<='Z' ){
 				BufferedReader reader = null; 
 				try {
 					reader = new BufferedReader(new FileReader(f));
@@ -146,6 +185,19 @@ public class ApkAnalysis {
 							parts=line.split(";->");
 							//确认是否为API调用函数
 							if(parts.length==2 && parts[0].contains("Landroid")){
+								
+								//确认是否为需要的API调用函数
+								boolean isAPI=false;
+								for(String str:apiPackage){
+									if(parts[0].contains(str)){
+										isAPI=true;
+										break;
+									}
+								}
+								if(!isAPI){
+									continue;
+								}
+								
 								tmp=parts[0].lastIndexOf('/');
 								api=parts[0].substring(tmp+1, parts[0].length());
 								
@@ -157,10 +209,19 @@ public class ApkAnalysis {
 								
 								if(!parts[1].contains("<init>")){
 									tmp=parts[1].indexOf('(');
-									api+="."+parts[1].substring(0, tmp);
+									int pos=50;
+									if(parts[1].contains("$")){
+										pos=parts[1].indexOf('$');
+									}
 									
+									if(tmp<pos){
+										api+="."+parts[1].substring(0, tmp);
+									}else{
+										api+="."+parts[1].substring(0, pos);
+									}
+																		
 									//System.out.println(f.getAbsolutePath()+"-----"+api);	
-									set.add(f.getName()+"-----"+api);
+									set.add(api);
 								}								
 
 							}
@@ -176,6 +237,61 @@ public class ApkAnalysis {
 				}  
 			}
 		}
+	}
+	
+	private void getAPIPackages(){
+		apiPackage.add("/accessibilityservice/");//开发可访问服务
+		
+		apiPackage.add("/accounts/");//账户
+		
+		apiPackage.add("/app/ActivityManager");//包含封装整个Android应用程序模型的高级类
+		apiPackage.add("/app/AlarmManager");//包含封装整个Android应用程序模型的高级类
+		apiPackage.add("/app/AliasActivity");//包含封装整个Android应用程序模型的高级类
+		apiPackage.add("/app/DownloadManager");//包含封装整个Android应用程序模型的高级类
+		apiPackage.add("/app/FragmentManager");//包含封装整个Android应用程序模型的高级类
+		apiPackage.add("/app/KeyguardManager");//包含封装整个Android应用程序模型的高级类
+		apiPackage.add("/app/LoaderManager");//包含封装整个Android应用程序模型的高级类
+		apiPackage.add("/app/NativeActivity");//包含封装整个Android应用程序模型的高级类
+		apiPackage.add("/app/SearchManager");//包含封装整个Android应用程序模型的高级类
+		apiPackage.add("/app/WallpaperManager");//包含封装整个Android应用程序模型的高级类
+		apiPackage.add("/app/ContextImpl");//包含封装整个Android应用程序模型的高级类
+		
+		apiPackage.add("/bluetooth/");//蓝牙使用
+		
+		apiPackage.add("/content/pm/");//用于在设备上访问和发布数据
+		apiPackage.add("/content/ContentResolver");//用于在设备上访问和发布数据
+		apiPackage.add("/content/BroadcastReceiver");//用于在设备上访问和发布数据
+		apiPackage.add("/content/ClipboardManager");//用于在设备上访问和发布数据
+		apiPackage.add("/content/ContentProvider");//用于在设备上访问和发布数据
+		apiPackage.add("/content/Intent");//用于在设备上访问和发布数据
+		apiPackage.add("/content/UriMatcher");//用于在设备上访问和发布数据
+		apiPackage.add("/content/UriPermission");//用于在设备上访问和发布数据
+		
+		apiPackage.add("/database/");//数据库相关
+		
+		apiPackage.add("/hardware/Camera");//对硬件功能的支持
+		
+		apiPackage.add("/location/");//位置信息
+		
+		apiPackage.add("/media/MediaRecorder");//管理音频和视频中各种媒体
+		apiPackage.add("/media/RingtoneManager");//管理音频和视频中各种媒体
+		apiPackage.add("/media/MediaRecorder");//管理音频和视频中各种媒体
+		apiPackage.add("/media/AudioRecord");//管理音频和视频中各种媒体
+		
+		apiPackage.add("/net/");//网络访问
+		
+		apiPackage.add("/os/");//操作系统服务
+		
+		apiPackage.add("/provider/");//访问Android提供的内容
+		
+		apiPackage.add("/telephony/CellLocation");//监控基本电话信息
+		apiPackage.add("/telephony/NeighboringCellInfo");//监控基本电话信息
+		apiPackage.add("/telephony/PhoneStateListener");//监控基本电话信息
+		apiPackage.add("/telephony/ServiceState");//监控基本电话信息
+		apiPackage.add("/telephony/SmsManager");//监控基本电话信息
+		apiPackage.add("/telephony/SmsMessage");//监控基本电话信息
+		apiPackage.add("/telephony/TelephonyManager");//监控基本电话信息
+		
 	}
 
 }

@@ -13,6 +13,8 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,34 +22,41 @@ import java.util.regex.Pattern;
  * 实现使用网络爬虫获取安卓应用程序的样本数据
  */
 public class APKExtracting {
-
 	
-	public void extractApk(){ 
+	Set set=new HashSet();
+
+	public Set getSet(){
+		return set;
+	}
+	
+	public void extractApk(int count){ 
 	    URL url = null;  
 	    URLConnection urlconn = null;  
 	    BufferedReader br = null;  
-	    PrintWriter pw = null; 
-        String regex = "http://www.wandoujia.com/apps/([A-Za-z0-9]+\\.)+[A-Za-z0-9]+/binding";  
+//	    PrintWriter pw = null; 
+        //String regex = "http://www.wandoujia.com/apps/([A-Za-z0-9]+\\.)+[A-Za-z0-9]+/binding";//豌豆荚
+        String regex = "/appdown/([A-Za-z0-9]+\\.)+[A-Za-z0-9]+";//安卓市场
         Pattern p = Pattern.compile(regex);          
         try {
-			url = new URL("http://www.wandoujia.com/category/255_2");//豌豆荚应用
+			url = new URL("http://apk.hiapk.com/apps?sort=5&pi="+count);//安卓市场
 			urlconn = url.openConnection();  
-			pw = new PrintWriter(new FileWriter("E:\\AndroidTools\\APKTool\\SampleLink.txt",true), true);//存储收集到的链接
+//			pw = new PrintWriter(new FileWriter("E:\\AndroidTools\\APKTool\\SampleLink.txt",true), true);//存储收集到的链接
 			
             br = new BufferedReader(new InputStreamReader(urlconn.getInputStream())); 
             String buf = null;  
-            
             while ((buf = br.readLine()) != null){
             	//System.out.println(buf);
             	Matcher buf_m = p.matcher(buf); 
                 while (buf_m.find()) {  
-                    pw.println(buf_m.group());  
-                    System.out.println(buf_m.group());
+                    //pw.println(buf_m.group());  
+                    //System.out.println(buf_m.group());
+                    set.add(buf_m.group());
                 }  
             } 
+            System.out.println(set.size()+"");
             
             br.close();  
-            pw.close();  
+            //pw.close();  
 			
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
