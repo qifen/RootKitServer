@@ -1,5 +1,6 @@
 package com.nju.rootkit.action;
 
+import com.nju.rootkit.Identifier.Identifier;
 import com.nju.rootkit.util.ActionUtil;
 import com.opensymphony.xwork2.ActionSupport;
 import org.apache.struts2.ServletActionContext;
@@ -10,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Random;
 
 /**
  * Created by weiyilin on 17/3/19.
@@ -47,6 +49,13 @@ public class UploadApkAction extends ActionSupport {
                 fos.write(buffer, 0, len);
             }
             System.out.println("文件上传成功" + getSavePath());
+            
+            Identifier identifier=new Identifier();
+    		//生成随机数，形成文件名
+    		Random random = new Random();
+            int a=random.nextInt(5000);
+            String result=identifier.getAnalysisResult(a+apkName);
+                        
             return SUCCESS;
         } catch (Exception e) {
             System.out.println("文件上传失败");

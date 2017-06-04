@@ -17,6 +17,13 @@ import java.util.regex.Pattern;
 public class Test {
 	
 	public static void main(String[] args){
+		Identifier i=new Identifier();
+		String apkName="facemelter.apk";
+		String result=i.getAnalysisResult(apkName);
+		System.out.println(apkName+"辨识结果结果为："+result);
+	}
+	
+	public void test(){
 		//ApkAnalysis a=new ApkAnalysis();		
 		//a.decompileApk();
 		//a.obtainPermission();

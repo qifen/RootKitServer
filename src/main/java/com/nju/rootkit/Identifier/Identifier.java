@@ -1,5 +1,6 @@
 package com.nju.rootkit.Identifier;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,13 +28,35 @@ public class Identifier {
 		}
 	}
 	
-	public String getAnalysisResult(String packageName){
+	public String getAnalysisResult(String apkName){
 		//生成随机数，形成文件名
-		Random random = new Random();
-        int a=random.nextInt(5000);
-        System.out.println(a);
+//		Random random = new Random();
+//        int a=random.nextInt(5000);
+//        System.out.println(a);
 		
-		return null;
+		ApkAnalysis apkAnalysis=new ApkAnalysis();
+		String packageDir=apkAnalysis.decompileApk(apkName);//反编译apk
+		
+		File f=new File(packageDir);
+		if(!f.exists()){
+			System.out.println("解析失败！");
+			return null;
+		}
+		
+		double[] rate=new double[2];
+		double[] tmp=new double[2];
+		connect();
+		rate=identifyPermission(packageDir);
+		tmp=identifyApi(packageDir);
+		closeConnect();
+		rate[0]=rate[0]+tmp[0];
+		rate[1]=rate[1]+tmp[1];
+		
+		if(rate[0]>rate[1]){
+			return "非恶意软件";
+		}else{
+			return "恶意软件";
+		}
 	}
 	
 	public double[] identifyPermission(String apkPath){

@@ -82,8 +82,43 @@ public class ApkAnalysis {
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		} 		
+	}
+	
+	/*
+	 * 反编译单个apk
+	 */
+	public String decompileApk(String apkName){
+		String apkFileDir="E:\\AndroidTools\\apk";//解析后的apk文件存放路径
+		String packageName=null;//反编译后文件夹名
 		
+		try {			
+			//获取需要反编译的apk文件
+			File apk=new File("E:\\AndroidTools\\apk\\"+apkName);
+			
+			String tempName=apkName.substring(0, apkName.length()-4);
+			packageName=tempName.replace(".", "");			
+			
+			Runtime runtime=Runtime.getRuntime();
+			String apkPath=apk.getAbsolutePath();
+			String cmd=apkToolPath+" d "+apkPath+" -o "+apkFileDir+"\\"+packageName;//d为反编译命令
+			
+			Process p=runtime.exec("cmd /c "+cmd);
+			p.waitFor();
+			System.out.println(packageName+"解析完毕！");
+			p.destroy();
+			
+			runtime.exec("cmd /c wmic process where name='cmd.exe' call terminate");			
+			
+		} catch (IOException e) {
+			System.out.println(e.toString());
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 	
+		
+		return "E:\\AndroidTools\\apk\\"+packageName;
 	}
 	
 	public ArrayList<String> obtainPermission(String apkFileDir){
@@ -132,6 +167,7 @@ public class ApkAnalysis {
 	public Set obtainAPI(String apkFileDir){
 		//String apkFileDir="E:\\AndroidTools\\APKTool\\MalwareTrain";//解析后的apk文件存放路径
 		//String packageName="_comaijiaoyouandroidsipphone_1005_105";
+		System.out.println("开始解析API："+apkFileDir);
 		if(apiPackage==null){
 			apiPackage=new ArrayList<String>();
 			getAPIPackages();
