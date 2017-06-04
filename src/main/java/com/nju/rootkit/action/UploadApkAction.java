@@ -37,10 +37,13 @@ public class UploadApkAction extends ActionSupport {
             request.setCharacterEncoding("UTF-8");
 
             //创建目录
-            File folder = new File(getSavePath());
-            if (!(folder.exists() && folder.isDirectory()))
-                folder.mkdirs();
-            fos = new FileOutputStream(getSavePath() + "/"  + getApkName());
+//            File folder = new File(getSavePath());
+//            if (!(folder.exists() && folder.isDirectory()))
+//                folder.mkdirs();
+    		//生成随机数，形成文件名
+    		Random random = new Random();
+            int a=random.nextInt(5000);
+            fos = new FileOutputStream("E:\\AndroidTools\\apk\\"+a+"-"+getApkName());
 
             fis = new FileInputStream(getApk());
             byte[] buffer = new byte[1024];
@@ -48,13 +51,10 @@ public class UploadApkAction extends ActionSupport {
             while ((len = fis.read(buffer)) != -1) {
                 fos.write(buffer, 0, len);
             }
-            System.out.println("文件上传成功" + getSavePath());
+            System.out.println("文件上传成功!"+getApkName());
             
             Identifier identifier=new Identifier();
-    		//生成随机数，形成文件名
-    		Random random = new Random();
-            int a=random.nextInt(5000);
-            String result=identifier.getAnalysisResult(a+apkName);
+            String result=identifier.getAnalysisResult(a+"-"+getApkName());
                         
             return SUCCESS;
         } catch (Exception e) {

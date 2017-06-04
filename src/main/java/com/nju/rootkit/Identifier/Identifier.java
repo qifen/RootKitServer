@@ -34,6 +34,7 @@ public class Identifier {
 //        int a=random.nextInt(5000);
 //        System.out.println(a);
 		
+		String result=null;
 		ApkAnalysis apkAnalysis=new ApkAnalysis();
 		String packageDir=apkAnalysis.decompileApk(apkName);//反编译apk
 		
@@ -53,10 +54,13 @@ public class Identifier {
 		rate[1]=rate[1]+tmp[1];
 		
 		if(rate[0]>rate[1]){
-			return "非恶意软件";
+			result="非恶意软件";
 		}else{
-			return "恶意软件";
+			result="恶意软件";
 		}
+		
+		System.out.println("结果是："+result);
+		return result;
 	}
 	
 	public double[] identifyPermission(String apkPath){
