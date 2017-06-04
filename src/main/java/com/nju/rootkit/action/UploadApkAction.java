@@ -1,16 +1,15 @@
 package com.nju.rootkit.action;
 
 import com.nju.rootkit.Identifier.Identifier;
+import com.nju.rootkit.graphviz.Identify;
 import com.nju.rootkit.util.ActionUtil;
 import com.opensymphony.xwork2.ActionSupport;
 import org.apache.struts2.ServletActionContext;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.Random;
 
 /**
@@ -43,7 +42,7 @@ public class UploadApkAction extends ActionSupport {
     		//生成随机数，形成文件名
     		Random random = new Random();
             int a=random.nextInt(5000);
-            fos = new FileOutputStream("E:\\AndroidTools\\apk\\"+a+"-"+getApkName());
+            fos = new FileOutputStream("F:\\AndroidTools\\apk\\"+a+"-"+getApkName());
 
             fis = new FileInputStream(getApk());
             byte[] buffer = new byte[1024];
@@ -55,6 +54,29 @@ public class UploadApkAction extends ActionSupport {
             
             Identifier identifier=new Identifier();
             String result=identifier.getAnalysisResult(a+"-"+getApkName());
+
+
+            //返回result
+            HttpServletResponse response= ServletActionContext.getResponse();
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/json; charset=utf-8");
+            System.out.println("start UploadIdentify result");
+
+
+            String jsonStr = "{\"content\":\"" + result  + "\"}";
+            PrintWriter out = null;
+            try {
+                out = response.getWriter();
+                out.write(jsonStr);
+                System.out.println("finish UploadIdentify result");
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (out != null) {
+                    out.close();
+                }
+            }
+
                         
             return SUCCESS;
         } catch (Exception e) {
