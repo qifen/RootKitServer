@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.Set;
 
 public class Identifier {
@@ -26,7 +27,16 @@ public class Identifier {
 		}
 	}
 	
-	public double[]  identifyPermission(String apkPath){
+	public String getAnalysisResult(String packageName){
+		//生成随机数，形成文件名
+		Random random = new Random();
+        int a=random.nextInt(5000);
+        System.out.println(a);
+		
+		return null;
+	}
+	
+	public double[] identifyPermission(String apkPath){
 		ApkAnalysis analysis=new ApkAnalysis();
 		ArrayList<String> permissions=analysis.obtainPermission(apkPath);
 		
