@@ -42,7 +42,7 @@ public class UploadApkAction extends ActionSupport {
     		//生成随机数，形成文件名
     		Random random = new Random();
             int a=random.nextInt(5000);
-            fos = new FileOutputStream("F:\\AndroidTools\\apk\\"+a+"-"+getApkName());
+            fos = new FileOutputStream("E:\\AndroidTools\\apk\\"+a+"-"+getApkName());
 
             fis = new FileInputStream(getApk());
             byte[] buffer = new byte[1024];
